@@ -12,8 +12,8 @@ positiveexamples(example1).
 positiveexamples(example2).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-getCorrespondingKR(example1, example4).
+%                   BASIC implementation of FOIL                              %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %code
 %To calculate propositions.
@@ -99,6 +99,18 @@ exception((A :- B), Xs, Xs1) :-
 exception((A:-B), Xs, Xs1) :-
 	findall(A, ( ismember(A, Xs), \+ B ), Xs1 ).
 
+%Pxs is PositiveExamples, Nxs is NegativeExamples 
+info_value(Clause, PositiveExamples, NegativeExamples, Value) :-
+	append(Clause, PositiveExamples, Ptuples),
+	length(Ptuples, P),
+	( P =:= 0 ->
+	      Value = 0
+	; append(Clause, NegativeExamples, Ntuples),
+	  length(Ntuples, N),
+	  Temp is P / (P + N),
+	  log(Temp, Temp1),
+	  Value is Temp1 * -1.442695
+	).
 
 %To calculate information gain.
 informationGain(NegativeExamples, PositiveExamples, Info, AllExamples, Gain) :-
